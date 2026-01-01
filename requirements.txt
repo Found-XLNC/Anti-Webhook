@@ -1,6 +1,7 @@
 fastapi
+uvicorn
+requests
+sqlalchemy
+slowapi
 jinja2
 pydantic
-sqlalchemy
-requests
-uvicorn
