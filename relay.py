@@ -51,15 +51,14 @@ def health_check():
 
 @app.post("/relay/{webhook_id}")
 @limiter.limit("1/15second", key_func=content_hash_key)
-async def relay_webhook(
-    webhook_id: str, 
-    payload: WebhookPayload, 
-    request: Request,  # <--- THIS WAS MISSING
-    background_tasks: BackgroundTasks
+def content_hash_key(request: Request):
+    # This just uses the IP address for the rate limit key
+    return get_cloudflare_ip(request)
 ):
     if webhook_id != PASSWORD_ID:
         return JSONResponse(status_code=403, content={"error": "Invalid Password ID"})
 
     background_tasks.add_task(sendhook, payload.dict(exclude_unset=True))
     return {"message": "Relayed successfully"}
+
 
